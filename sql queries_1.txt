@@ -29,6 +29,7 @@ INSERT INTO events VALUES (12,'500m',2016,'Thomas','Steven','Catherine');
 
 
 4. Solution in SQL
+
 select GOLD as player, 
 count(gold) as no_of_gold
 from events
@@ -37,11 +38,13 @@ GROUP by gold
 order by gold
 
 5. Solution in Pyspark
+
 from sql.functions import col
 ##reading file
 df = spark.read.format("csv").option("header", "true").load("csvfile.csv")
+
 ##filtering silver and bronze
-
-df1=df.filter(~col(GOLD).isin(["SILVER","BRONZE"]))
-
-df1.groupBy(df1.GOLD).alias("player").count().show()
+silver=df.select("SILVER").distinct().rdd.map(lambda x: x[0]).collect()
+bronze=df.select("BRONZE").distinct().rdd.map(lambda x: x[0]).collect()
+silverbronze=silver+bronze
+df.where(~col("GOLD").isin(silverbronze)).groupby("GOLD").count().show()
