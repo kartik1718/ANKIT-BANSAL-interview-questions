@@ -1,0 +1,47 @@
+1. Question link- https://www.youtube.com/watch?v=dOLBRfwzYcU&list=PLBTZqjSKn0IfuIqbMIqzS-waofsPHMS0E&index=1
+
+2. Question description- We need to find player with no of gold medals won by them only for players who won only gold medals.
+
+3. Schema and script-
+
+CREATE TABLE events (
+ID int,
+event varchar(255),
+YEAR INt,
+GOLD varchar(255),
+SILVER varchar(255),
+BRONZE varchar(255)
+);
+
+
+INSERT INTO events VALUES (1,'100m',2016, 'Amthhew Mcgarray','donald','barbara');
+INSERT INTO events VALUES (2,'200m',2016, 'Nichole','Alvaro Eaton','janet Smith');
+INSERT INTO events VALUES (3,'500m',2016, 'Charles','Nichole','Susana');
+INSERT INTO events VALUES (4,'100m',2016, 'Ronald','maria','paula');
+INSERT INTO events VALUES (5,'200m',2016, 'Alfred','carol','Steven');
+INSERT INTO events VALUES (6,'500m',2016, 'Nichole','Alfred','Brandon');
+INSERT INTO events VALUES (7,'100m',2016, 'Charles','Dennis','Susana');
+INSERT INTO events VALUES (8,'200m',2016, 'Thomas','Dawn','catherine');
+INSERT INTO events VALUES (9,'500m',2016, 'Thomas','Dennis','paula');
+INSERT INTO events VALUES (10,'100m',2016, 'Charles','Dennis','Susana');
+INSERT INTO events VALUES (11,'200m',2016, 'jessica','Donald','Stefeney');
+INSERT INTO events VALUES (12,'500m',2016,'Thomas','Steven','Catherine');
+
+
+4. Solution in SQL
+select GOLD as player, 
+count(gold) as no_of_gold
+from events
+where player not IN(select SILVER from events union select bronze from events)
+GROUP by gold
+order by gold
+
+5. Solution in Pyspark
+from sql.functions import col
+##reading file
+df = spark.read.format("csv").option("header", "true").load("csvfile.csv")
+##filtering silver and bronze
+
+df1=df.filter(~col(GOLD).isin(["SILVER","BRONZE"]))
+
+df1.groupBy(df1.GOLD).alias("player").count().show()
