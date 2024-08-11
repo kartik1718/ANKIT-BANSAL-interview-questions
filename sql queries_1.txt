@@ -41,7 +41,7 @@ order by gold
 
 from sql.functions import col
 ##reading file
-df = spark.read.format("csv").option("header", "true").load("csvfile.csv")
+df = spark.read.format("csv").option("header", "true").load("sql_query_1_data.csv")
 
 ##filtering silver and bronze
 silver=df.select("SILVER").distinct().rdd.map(lambda x: x[0]).collect()
